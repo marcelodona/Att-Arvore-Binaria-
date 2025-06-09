@@ -1,159 +1,73 @@
 public class ArvoreBinaria {
-    protected No raiz;
+    private No raiz;
 
-    public ArvoreBinaria(int conteudo) {
-        raiz = new No(conteudo);
+    public ArvoreBinaria(int valorInicial) {
+        this.raiz = new No(valorInicial);
     }
 
-    public boolean estaVazia() {
-        if(raiz == null) {
-            return true;
+    public void adicionar(int valor) {
+        raiz = inserir(raiz, new No(valor));
+    }
+
+    private No inserir(No atual, No novo) {
+        if (atual == null) return novo;
+
+        if (novo.getConteudo() < atual.getConteudo()) {
+            atual.setEsquerda(inserir(atual.getEsquerda(), novo));
         } else {
-            return false;
+            atual.setDireita(inserir(atual.getDireita(), novo));
         }
+        return atual;
     }
 
-    public void inserirRecursivoRedirecionamentoOtimizado(int conteudo) {
-        No novoNo = new No(conteudo);
-        this.raiz = inserirRecursivoOtimizado(this.raiz, novoNo);
+    public void imprimirEmOrdem() {
+        emOrdem(raiz);
     }
 
-    private No inserirRecursivoOtimizado(No aux, No novoNo) {
-        if(aux == null) {
-            return novoNo;
-        } else if (novoNo.getConteudo() > aux.getConteudo()) {
-            aux.setDireita(inserirRecursivoOtimizado(aux.getDireita(), novoNo));
+    private void emOrdem(No atual) {
+        if (atual == null) return;
+        emOrdem(atual.getEsquerda());
+        System.out.println(atual.getConteudo());
+        emOrdem(atual.getDireita());
+    }
+
+    public void excluir(int valor) {
+        raiz = remover(raiz, valor);
+    }
+
+    private No remover(No atual, int valor) {
+        if (atual == null) return null;
+
+        if (valor < atual.getConteudo()) {
+            atual.setEsquerda(remover(atual.getEsquerda(), valor));
+        } else if (valor > atual.getConteudo()) {
+            atual.setDireita(remover(atual.getDireita(), valor));
         } else {
-            aux.setEsquerda(inserirRecursivoOtimizado(aux.getEsquerda(), novoNo));
-        }
-
-        return aux;
-    }
-
-    public void removerNo(int elemento){
-        No filho = buscarFilhoRecursivo(raiz, elemento);
-        No pai = buscarPaiRecursivo(raiz, filho);
-        //Aqui já tenho o pai e o filho(quem quero remover) definidos.
-
-        if (filho == null){ //Se filho for nulo o elemento não existe na árvore
-            return;
-        }
-
-        if(filho.getDireita() != null && filho.getEsquerda() != null){ //remover nó com 2 filhos
-            removerNo2Filhos(filho);
-
-        }else if(filho.getDireita() != null || filho.getEsquerda() != null){//remover nó com 1 filho
-            removerNo1Filho(pai,filho);
-        }else {//Remover nó folha
-            removerNoFolha(pai,filho);
-        }
-    }
-
-    private No removerNo2Filhos(No filho){
-        //selecionar maior dos menores
-        No maior = filho.getEsquerda();
-        No paiDoMaior = filho;
-        while(maior.getDireita() != null){
-            paiDoMaior = maior;
-            maior = maior.getDireita();
-        }
-        filho.setConteudo(maior.getConteudo());
-
-        if (paiDoMaior == filho){ //caso paiDoMaior seja == filho quer dizer q o maior é filho direto do elemento q iremos remover logo mudamos o apontamento dele para o apontamento do maior.getesquerda por ele ser o maior temos a certeza q não terá filho a direita
-            filho.setEsquerda(maior.getEsquerda());
-        }else{//caso não seja, ajustamos o apontamento da direita do paiDoMaior para maior.getEsquerda para caso haja algum filho a esquerda do maior já que o filho a esquerda do maior será maior que o paiDoMaior, caso não haja filho apenas será mudado o apontamento para nulo
-            paiDoMaior.setDireita(maior.getEsquerda());
-        }
-        return filho;
-    }
-
-    private No removerNo1Filho(No pai,No filho){
-        if (filho.getDireita() != null){ //verifica em qual direção o nó filho tem subarvore
-            if (pai.getConteudo() < filho.getConteudo()){ //se o pai for menor que o filho (elemento a ser removido) irá alterar o apontamento da direita para o "neto"
-                pai.setDireita(filho.getDireita());
-            }else {
-                pai.setEsquerda(filho.getDireita());
-            }
-        }else {
-            if (pai.getConteudo() < filho.getConteudo()){
-                pai.setDireita(filho.getEsquerda());
-            }else {
-                pai.setEsquerda(filho.getEsquerda());
-            }
-        }
-        return pai;
-    }
-
-    private No removerNoFolha(No pai, No filho){
-        if (pai.getConteudo() < filho.getConteudo()){
-            pai.setDireita(null);
-        }else {
-            pai.setEsquerda(null);
-        }
-        return pai;
-    }
-
-    public void visualizar() {
-        //preOrdem(this.raiz);
-        //posOrdem(this.raiz);
-        emOrdem(this.raiz);
-    }
-
-    public No buscarFilho(int elemento) {//Apenas chama Metodo buscarFilhoRecursivo
-        return buscarFilhoRecursivo(this.raiz, elemento);
-    }
-
-    private No buscarFilhoRecursivo(No atual, int elemento) {
-        if (atual == null) {
-            return null;
-        } //termina a busca se o No atual for nulo
-
-        //retorna o No que contém o elemento
-        if (atual.getConteudo() == elemento) {
-            return atual;
-        }
-
-        //busca recursivamente na subarvore direita
-        if (elemento > atual.getConteudo()) {
-            return buscarFilhoRecursivo(atual.getDireita(), elemento);
-        }
-
-        //busca recursivamente na subarvore esquerda
-        return buscarFilhoRecursivo(atual.getEsquerda(), elemento);
-    }
-
-    public No buscarPai(int elemento) {//Apenas chama Metodo buscarPaiRecursivo
-        return buscarPaiRecursivo(this.raiz, buscarFilho(elemento));
-    }
-
-    private No buscarPaiRecursivo(No pai, No filho) {
-        if (filho == null){
-            System.out.println("elemento não existe na árvore");
-        }else {
-
-            if (pai == null) { //caso o filho ou o pai seja nulo retorna nulo
+            // nó folha
+            if (atual.getEsquerda() == null && atual.getDireita() == null) {
                 return null;
             }
-
-            if (pai.getEsquerda() == filho || pai.getDireita() == filho) { //caso o NoFilho seja o filho das subarvores do NoPai retorna o pai
-                return pai;
+            // apenas um filho
+            else if (atual.getEsquerda() == null) {
+                return atual.getDireita();
+            } else if (atual.getDireita() == null) {
+                return atual.getEsquerda();
             }
-
-            if (pai.getConteudo() > filho.getConteudo()) {//Chama o metodo novamente atribuindo o Nopai como seu filho na subarvore a esquerda
-                return buscarPaiRecursivo(pai.getEsquerda(), filho);
+            // dois filhos
+            else {
+                No substituto = encontrarMaior(atual.getEsquerda());
+                atual.setConteudo(substituto.getConteudo());
+                atual.setEsquerda(remover(atual.getEsquerda(), substituto.getConteudo()));
             }
-
-            return buscarPaiRecursivo(pai.getDireita(), filho);
         }
-        return null;
+
+        return atual;
     }
 
-    public void emOrdem(No no) {
-        if(no == null) {
-            return;
+    private No encontrarMaior(No atual) {
+        while (atual.getDireita() != null) {
+            atual = atual.getDireita();
         }
-        emOrdem(no.getEsquerda());
-        System.out.println(no.getConteudo());
-        emOrdem(no.getDireita());
+        return atual;
     }
 }
