@@ -1,50 +1,35 @@
 public class Main {
     public static void main(String[] args) {
-        // Criando a árvore com o nó raiz 50
+        // árvore binária com a raiz 10
         ArvoreBinaria arvore = new ArvoreBinaria(10);
 
-        // Inserindo elementos
-        arvore.inserirRecursivoRedirecionamentoOtimizado(5);
-        arvore.inserirRecursivoRedirecionamentoOtimizado(-2);
-        arvore.inserirRecursivoRedirecionamentoOtimizado(11);
-        arvore.inserirRecursivoRedirecionamentoOtimizado(22);
-        arvore.inserirRecursivoRedirecionamentoOtimizado(23);
-        arvore.inserirRecursivoRedirecionamentoOtimizado(25);
-        arvore.inserirRecursivoRedirecionamentoOtimizado(-10);
-        arvore.inserirRecursivoRedirecionamentoOtimizado(0);
+        arvore.adicionar(5);
+        arvore.adicionar(-2);
+        arvore.adicionar(11);
+        arvore.adicionar(22);
+        arvore.adicionar(23);
+        arvore.adicionar(25);
+        arvore.adicionar(-10);
+        arvore.adicionar(0);
 
+        // árvore em ordem (menor para maior)
+        System.out.println("Árvore em ordem:");
+        arvore.imprimirEmOrdem();
 
-        System.out.println("Árvore em ordem (inicial):");
-        arvore.visualizar();
+        // remoção de nós folha
+        arvore.excluir(0);
+        arvore.excluir(25);
+        System.out.println("\nApós remover nós folhas (0 e 25):");
+        arvore.imprimirEmOrdem();
 
-        // Testando busca de filho
-        int valorBuscado = 10;
-        No encontrado = arvore.buscarFilho(valorBuscado);
-        if (encontrado != null) {
-            System.out.println("\nValor " + valorBuscado + " encontrado na árvore.");
-        } else {
-            System.out.println("\nValor " + valorBuscado + " não encontrado na árvore.");
-        }
+        // remoção de nó com apenas um filho
+        arvore.excluir(22);  // só tem o filho 23
+        System.out.println("\nApós remover nó com um filho (22):");
+        arvore.imprimirEmOrdem();
 
-        // Testando busca de pai
-        No pai = arvore.buscarPai(valorBuscado);
-        if (pai != null) {
-            System.out.println("Pai de " + valorBuscado + " é: " + pai.getConteudo());
-        }
-
-        // Removendo nó folha
-        System.out.println("\nRemovendo nó folha (25):");
-        arvore.removerNo(25);
-        arvore.visualizar();
-
-        // Removendo nó com um filho
-        System.out.println("\nRemovendo nó com um filho (22):");
-        arvore.removerNo(22);
-        arvore.visualizar();
-
-        // Removendo nó com dois filhos
-        System.out.println("\nRemovendo nó com dois filhos (-2):");
-        arvore.removerNo(-2);
-        arvore.visualizar();
+        // remoção da raiz (nó principal da árvore, a raiz tem dois filhos (5 e 11), então o código vai buscar o maior valor da subárvore esquerda
+        arvore.excluir(10);
+        System.out.println("\nApós remover a raiz (10):");
+        arvore.imprimirEmOrdem();
     }
 }
