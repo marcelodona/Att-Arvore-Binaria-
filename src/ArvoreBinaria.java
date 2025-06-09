@@ -62,19 +62,19 @@ public class ArvoreBinaria {
         }
         // assim que encontra o nó a ser removido
         else {
-            // caso 1: nó é uma folha
+            //1: nó é uma folha
             if (atual.getEsquerda() == null && atual.getDireita() == null) {
                 return null; // remove, retornando null
             }
-            // caso 2: tem apenas o filho da direita
+            // 2: tem apenas o filho da direita
             else if (atual.getEsquerda() == null) {
                 return atual.getDireita(); // remove e retorna o filho da direita
             }
-            // caso 3: tem apenas o filho da esquerda
+            // 3: tem apenas o filho da esquerda
             else if (atual.getDireita() == null) {
                 return atual.getEsquerda(); // remove e retorna o filho da esquerda
             }
-            // caso 4: nó com dois filhos
+            // 4: nó com dois filhos
             else {
                 // encontra o maior dos menores
                 No substituto = encontrarMaior(atual.getEsquerda());
